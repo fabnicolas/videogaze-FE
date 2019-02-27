@@ -1,0 +1,111 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.block {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.block.features {
+  height: 60%;
+  background-color: royalblue;
+}
+
+.block.footer {
+  height: 30%;
+  background-color: darkslategray;
+}
+
+.two-columns {
+  position: relative;
+  height: 100%;
+  width: 50%;
+}
+
+.two-columns.left {
+  float: left;
+}
+
+.two-columns.right {
+  float: right;
+}
+
+.two-columns.right:after {
+  clear: both;
+}
+
+.features-card {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  height: 80%;
+  width: 80%;
+  background-color: white;
+  box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 1);
+}
+
+.slideshow {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.nav {
+  height: 50px;
+  z-index: 1;
+}
+
+.nav.component {
+  background: linear-gradient(to bottom, #4e4b47 1%, #2c2c28 100%);
+}
+
+.block1-content {
+  position: relative;
+  top: -50px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.center-using-float {
+  float: left;
+  height: 50%;
+  width: 100%;
+  margin-bottom: -50px;
+}
+
+.div-welcome {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  height: 40%;
+  width: 60%;
+  padding: 35px;
+  background-color: rgba(56, 54, 52, 0.5);
+  border-radius: 5px;
+  border: 1px solid #666262;
+}
+
+.icon-material-hamburger {
+  background-image: url('../images/svg/material_hamburger.svg');
+  height: 30px;
+  width: 30px;
+  margin-top: 7px;
+  margin-left: 7px;
+}

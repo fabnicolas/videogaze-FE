@@ -1,0 +1,53 @@
+<html>
+
+<head>
+  <title>VideoGaze</title>
+  <link rel="stylesheet" type="text/css" href="./css/reset.css" />
+  <link rel="stylesheet" type="text/css" href="./css/default.css" />
+  <link rel="stylesheet" type="text/css" href="./css/style.css" />
+</head>
+
+<body>
+  <div class="nav component">
+    <div class="icon-material-hamburger"></div>
+  </div>
+  <div class="block slideshow" id="div_presentation">
+    <div class="table-row nav ghost"></div>
+    <div class="block1-content">
+      <div class="div-welcome">
+        Benvenuto nel sito!<br />
+        Descrizione del sito.<br />
+        <input type="button" value="Crea stanza" />
+      </div>
+    </div>
+  </div>
+  <div class="block features" id="section-features">
+    <div class="two-columns left">
+      <div class="features-card">
+        QUALITY
+      </div>
+    </div>
+    <div class="two-columns right">
+      <div class="features-card">
+        CONTENT
+      </div>
+    </div>
+  </div>
+  <div class="block footer"></div>
+
+  <script type="text/javascript" src="./js/background-changer.js"></script>
+  <script type="text/javascript">
+    BackgroundImageSlideshow(
+      './images/backgrounds/',
+      [
+        'background1.jpg',
+        'background2.jpg',
+        'background3.jpg'
+      ],
+      document.getElementById("div_presentation"),
+      3000
+    );
+  </script>
+</body>
+
+</html>
