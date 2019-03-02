@@ -11,7 +11,7 @@
   <div class="nav component">
     <div class="icon-material-hamburger"></div>
   </div>
-  <div class="block slideshow" id="div_presentation">
+  <div class="block slideshow">
     <div class="table-row nav ghost"></div>
     <div class="block1-content">
       <div class="div-welcome">
@@ -20,6 +20,7 @@
         <input type="button" value="Crea stanza" />
       </div>
     </div>
+    <div id="div_presentation"></div>
   </div>
   <div class="block features" id="section-features">
     <div class="two-columns left">
@@ -35,17 +36,26 @@
   </div>
   <div class="block footer"></div>
 
-  <script type="text/javascript" src="./js/background-changer.js"></script>
+  <script type="text/javascript" src="./js/lib/slideshowify.js"></script>
   <script type="text/javascript">
     BackgroundImageSlideshow(
       './images/backgrounds/',
       [
         'background1.jpg',
         'background2.jpg',
-        'background3.jpg'
+        'background3.jpg',
+        'background4.jpg',
+        'background5.jpg',
+        'background6.jpg',
+        'background7.jpg',
+        'background8.jpg',
+        'background9.jpg'
       ],
       document.getElementById("div_presentation"),
-      3000
+      {
+        time_visible: 3,
+        time_transition: 2,
+      }
     );
   </script>
 </body>

@@ -68,7 +68,7 @@ body {
 }
 
 .nav.component {
-  background: linear-gradient(to bottom, #4e4b47 1%, #2c2c28 100%);
+  background: ease-in-gradient(to bottom, #4e4b47 1%, #2c2c28 100%);
 }
 
 .block1-content {
