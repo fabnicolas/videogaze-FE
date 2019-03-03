@@ -93,7 +93,7 @@ var BackgroundImageSlideshow = (function(image_path, images, div_slideshow, opti
       " top: 0;\n" +
       " left: 0;\n" +
       " opacity: 0;\n" +
-      " z-index: 0;\n" +
+      " z-index: -1;\n" +
       "}\n\n" +
       "figure {margin: 0;}\n\n" +
       '@keyframes imageAnimation {\n' +
