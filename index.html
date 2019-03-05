@@ -24,7 +24,7 @@
     JSLoader.load_once("lib/HashRouting.js", function() {
       var param_roomcode = HashRouting.get_parameter("roomcode");
       if(param_roomcode) {
-        page_to_set = "room.html";
+        page_to_set = "room";
         JSLoader.load_once('lib/SPA.js', function() {
           SPA.init('./page_fragments/', function() {
             SPA.setVar('roomcode', param_roomcode);
@@ -40,24 +40,12 @@
   <div class="block slideshow">
     <div class="table-row nav ghost"></div>
     <div class="block1-content">
-      <div class="div-extend" id="spa-app"></div>
+      <div class="div-extend" id="spa-content"></div>
     </div>
     <div id="div_presentation"></div>
   </div>
-  <div class="block features" id="section-features">
-    <div class="two-columns left">
-      <div class="features-card">
-        <b>VideoGaze features</b>
-        <i class="material-icons">done</i> Select local video
-      </div>
-    </div>
-    <div class="two-columns right">
-      <div class="features-card">
-        CONTENT
-      </div>
-    </div>
+  <div id="spa-bottom">
   </div>
-  <div class="block footer"></div>
 
   <script>
     JSLoader.load_once("global.js");
@@ -87,10 +75,23 @@
 
     JSLoader.load_once('lib/SPA.js', function() {
       SPA.init('./page_fragments/', function() {
-        if(page_to_set == '') page_to_set = "home.html";
-        SPA.setPage(page_to_set);
+        SPA.setRoutes({
+          'home': function(){
+            SPA.setPage("vg-home-content.html", "spa-content");
+            SPA.setPage("vg-home-bottom.html", "spa-bottom");
+          },
+          'room': function(){
+            SPA.setPage("room.html", "spa-content");
+            SPA.setPage(null, "spa-bottom");
+          }
+        })
+
+        if(page_to_set == '') page_to_set = "home";
+        SPA.navigateRoute(page_to_set);
       });
     });
+
+    
   </script>
 </body>
 

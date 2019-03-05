@@ -25,7 +25,7 @@
       JSLoader.load_once("lib/VG_Room.js", function() {
         make_room(null, 'external_mp4', file, function on_complete(response_roomcode) {
           SPA.setVar('roomcode', response_roomcode);
-          SPA.setPage("room.html");
+          SPA.setPage("room.html", "spa-content");
         });
       });
     }

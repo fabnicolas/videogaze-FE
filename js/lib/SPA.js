@@ -23,7 +23,7 @@
  *      JSLoader.load_once('./js/lib/SPA.js',function(){
  *          SPA.init('./page_fragments/',function(){
  *              SPA.setVar('cat_name','Lord Beerus');
- *              SPA.setPage('page1.html'); // page1.html can access cat_name by using var cat_name = SPA.getVar('cat_name'); 
+ *              SPA.setPage('page1.html', "spa-app"); // page1.html can access cat_name by using var cat_name = SPA.getVar('cat_name'); 
  *          });
  *      });
  *  </script>
@@ -40,6 +40,7 @@ if(typeof (SPA) == 'undefined') {  // Load it only one time.
     var div_spajs; // Div used to inject JS inside <body> tag.
     var div_spavars; // Div used to inject SPA variables.
     var spa_vars = {};
+    var routes = {};
 
     /**
      * Init Single Page Application (SPA).
@@ -64,6 +65,7 @@ if(typeof (SPA) == 'undefined') {  // Load it only one time.
 
           div_spavars = document.createElement("div");
           div_spavars.id = "spa-vars";
+          div_spavars.style.display = "none";
           document.body.appendChild(div_spavars);
           initialized = true;
         }
@@ -128,18 +130,31 @@ if(typeof (SPA) == 'undefined') {  // Load it only one time.
      * @param {string} html_page - The fragment name.
      * @param {string} route - The new route.
      */
-    var setPage = function(html_page, route) {
+    var setPage = function(html_page, selector_name, route) {
       if(route === undefined) route = null;
+      if(selector_name === undefined) selector_name = 'spa-app';
 
+      if(html_page == null){
+        document.getElementById(selector_name).innerHTML = "";
+        return;
+      }
       DOMUtils.loadHTML(pf_folder + html_page, function(status, text) {
         if(status == true) {
           DOMUtils.injectHTMLwJS(text,
-            document.getElementById("spa-app"),
+            document.getElementById(selector_name),
             div_spajs
           );
           if(route != null) setRoute(route);
         }
       });
+    }
+
+    var setRoutes = function(param_routes){
+      routes = param_routes;
+    }
+
+    var navigateRoute = function(route_name){
+      if(routes.hasOwnProperty(route_name)) routes[route_name]();
     }
 
     /**
@@ -148,7 +163,7 @@ if(typeof (SPA) == 'undefined') {  // Load it only one time.
      * 
      * @param {string} route - The new route.
      */
-    var setRoute = function(route) {
+    var setHistoryBarURL = function(route) {
       window.history.replaceState({}, document.title, route);
     }
 
@@ -160,7 +175,9 @@ if(typeof (SPA) == 'undefined') {  // Load it only one time.
       setVariable: setVariable,
       getVariable: getVariable,
       setPage: setPage,
-      setRoute: setRoute
+      setRoutes: setRoutes,
+      navigateRoute: navigateRoute,
+      setHistoryBarURL: setHistoryBarURL
     }
   })();
 
