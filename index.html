@@ -18,7 +18,7 @@
       Logger.enable();
     });
 
-    var page_set = false;
+    var page_to_set = '';
 
     // Handle # urls like routing
     JSLoader.load_once("lib/HashRouting.js", function() {
@@ -87,7 +87,7 @@
 
     JSLoader.load_once('lib/SPA.js', function() {
       SPA.init('./page_fragments/', function() {
-        if(page_to_set === undefined) page_to_set = "home.html";
+        if(page_to_set == '') page_to_set = "home.html";
         SPA.setPage(page_to_set);
       });
     });

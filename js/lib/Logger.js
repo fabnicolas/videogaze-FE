@@ -1,12 +1,10 @@
 var Logger = (function(){
   var debug_mode=false;
 
-  var enable = function(){
-    debug_mode=true;
-  }
+  var log = function(){}
 
-  var log = function(){
-    if(debug_mode) console.log.apply(null, arguments);
+  var enable = function(){
+    this.log = console.log.bind(window.console);
   }
 
   return {

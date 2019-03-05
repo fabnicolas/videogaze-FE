@@ -114,19 +114,16 @@ var BackgroundImageSlideshow = (function(image_path, images, div_slideshow, opti
 
     injectCSS(css_code);
 
-    var ijt = function(i){
-      console.log("ciao");
-      css_code = '';
-      css_code +=
+    var load_nth_child_image = function(i){
+      injectCSS(
         ".slideshowified>figure:nth-child(" + (i + 1) + ") {\n" +
-        "      animation-delay: " + (i * delay) + "s;\n" +
         "      background-image: url('" + image_path + images[i] + "');\n" +
-        "}\n\n";
-      injectCSS(css_code);
+        "}\n\n"
+      );
     }
 
     for(var i = 1;i < images.length;i++) {
-      setTimeout(ijt.bind(null, i), (options.time_visible * i * 1000)/2 + 1);
+      setTimeout(load_nth_child_image.bind(null, i), (options.time_visible * i * 1000)/2 + 1);
     }
 
 
