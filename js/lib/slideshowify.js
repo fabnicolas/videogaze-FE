@@ -81,7 +81,7 @@ var BackgroundImageSlideshow = (function(image_path, images, div_slideshow, opti
     // Prepare animations and inject CSS code into page
     var css_code = '';
     css_code +=
-      ".slideshowified {overflow: hidden;}\n\n" +
+      ".slideshowified {overflow-x: hidden; overflow-y: hidden; width: 100%;}\n\n" +
       ".slideshowified>figure {\n" +
       " animation: imageAnimation " + total_time + "s linear infinite 0s;\n" +
       " backface-visibility: hidden;\n" +
@@ -97,9 +97,9 @@ var BackgroundImageSlideshow = (function(image_path, images, div_slideshow, opti
       "}\n\n" +
       "figure {margin: 0;}\n\n" +
       '@keyframes imageAnimation {\n' +
-      ' 0% {animation-timing-function: ease-in; opacity: 0;}\n' +
-      ' ' + initial_perc + '% {animation-timing-function: ease-out; opacity: 1;}\n' +
-      ' ' + anim_sub_perc + '% {opacity: 1;}\n' +
+      ' 0% {animation-timing-function: ease-in; opacity: 0; transform: scale3d(1.2, 1.2, 1.2);}\n' +
+      ' ' + initial_perc + '% {animation-timing-function: ease-out; opacity: 1; transform: scale3d(1.1, 1.1, 1.1);}\n' +
+      ' ' + anim_sub_perc + '% {opacity: 1; transform: scale3d(1, 1, 1);}\n' +
       ' ' + parseFloat(anim_sub_perc + initial_perc).toFixed(2) + '% {opacity: 0;}\n' +
       ' 100% {opacity: 0;}\n' +
       '}\n\n';
