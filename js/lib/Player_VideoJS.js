@@ -6,18 +6,18 @@ var Player_VideoJS = (function(){
 
         if(is_initialized['core']===false){
             var link_videojs_css=document.createElement('link');
-            link_videojs_css.href='http://vjs.zencdn.net/6.6.3/video-js.css';
+            link_videojs_css.href='https://vjs.zencdn.net/6.6.3/video-js.css';
             link_videojs_css.rel='stylesheet';
             link_videojs_css.setAttribute("data-videojs","true");
             document.getElementsByTagName('head')[0].appendChild(link_videojs_css);
 
             var script_videojs_js=document.createElement('script');
-            script_videojs_js.src='http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js';
+            script_videojs_js.src='https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js';
             script_videojs_js.setAttribute("data-videojs","true");
             document.getElementsByTagName('head')[0].appendChild(script_videojs_js);
 
             var script = document.createElement("script");
-            script.src = "http://vjs.zencdn.net/6.6.3/video.js";
+            script.src = "https://vjs.zencdn.net/6.6.3/video.js";
             script.setAttribute("data-videojs","true");
             if(callback!=null) script.onload=callback;
             document.body.appendChild(script);
@@ -30,7 +30,7 @@ var Player_VideoJS = (function(){
     var no_js_message=function(){
         return '\n<p class="vjs-no-js">'
         +    '\nTo view this video please enable JavaScript, and consider upgrading to a web browser that'
-        +    '\n<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>'
+        +    '\n<a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>'
         +  '\n</p>';
     }
 
