@@ -1,0 +1,34 @@
+<div id="div_nav_ghost" class="table-row nav ghost"></div>
+<div class="content" id="video_player_container">
+  <input id="video_selector" type="file" accept="video/*" style="display:none" />
+</div>
+
+<script type="text/javascript">
+  (function() {
+    var remove_div_nav_ghost = function() {
+      var element_to_remove = document.getElementById("div_nav_ghost");
+      element_to_remove.parentNode.removeChild(element_to_remove);
+    }
+
+    var set_room = function(response) {
+      JSLoader.load_once("VG_Room_Helper.js", function() {
+        set_room_content(
+          document.getElementById("video_player_container"),
+          'my_video',
+          response.message,
+          remove_div_nav_ghost
+        );
+      });
+    }
+
+    JSLoader.load_once("lib/VG_Room.js", function() {
+      JSLoader.load_once("lib/Player_VideoJS.js", function() {
+        Room.init(GLOBAL.backend_url, SPA.getVar('roomcode'), null,
+          function on_room_init(response) {
+            if(response.status == 1) set_room(response);
+          }
+        );
+      });
+    });
+  })();
+</script>

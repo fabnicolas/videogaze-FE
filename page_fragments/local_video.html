@@ -1,0 +1,39 @@
+<div id="div_nav_ghost" class="table-row nav ghost"></div>
+<h1>Select local video:</h1>
+<div id="message"></div>
+<input id="video_selector" type="file" accept="video/*" />
+
+<div class="content" id="video_player_container"></div>
+
+<script type="text/javascript">
+  JSLoader.load_once("lib/LocalFileSelector.js", function() {
+    var listen_video_input = function(callback) {
+      LocalFileSelector.listenTo("video_selector", function video_selected_callback(file) {
+        callback(file);
+      });
+    }
+
+    var load_player = function(callback) {
+      JSLoader.load_once("lib/Player_VideoJS.js", function JSLoader_callback() {
+        Player_VideoJS.init(callback);
+      });
+    }
+
+    var blob_make_room = function(file) {
+      SPA.setVariable('blob_loaded', '1');
+      SPA.setVariable('video_to_play', file);
+      JSLoader.load_once("lib/VG_Room.js", function() {
+        make_room(null, 'external_mp4', file, function on_complete(response_roomcode) {
+          SPA.setVar('roomcode', response_roomcode);
+          SPA.setPage("room.html");
+        });
+      });
+    }
+
+    listen_video_input(function video_selected_callback(file) {
+      load_player(function load_player_callback() {
+        blob_make_room(file);
+      });
+    })
+  })
+</script>
