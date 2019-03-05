@@ -1,4 +1,17 @@
 var Player_VideoJS = (function() {
+  var addEventListenerOnce = function(element, event_name, func) {
+    var one_time_function = function() {
+      element.removeEventListener(event_name, one_time_function);
+      func();
+    };
+    element.addEventListener(event_name, one_time_function);
+  }
+
+  var on_video_ready = function(player_id, callback){
+    if(callback != null)
+      addEventListenerOnce(document.getElementById(player_id), "canplay", callback);
+  }
+
   var is_initialized = {'core': false, 'youtube': false};
 
   var init = function(callback) {
@@ -63,7 +76,7 @@ var Player_VideoJS = (function() {
       + '\n</video>';
     node.innerHTML = body_data;
 
-    if(callback != null) callback();
+    on_video_ready(player_id, callback);
   }
 
   var inject_external_video_player = function(node, player_id, url, extra_video_elements, callback) {
@@ -78,8 +91,8 @@ var Player_VideoJS = (function() {
       + no_js_message()
       + '\n</video>';
     node.innerHTML = body_data;
-
-    if(callback != null) callback();
+    
+    on_video_ready(player_id, callback);
   }
 
   var inject_youtube_video_player = function(node, player_id, video_id, extra_video_elements, callback) {
@@ -99,7 +112,7 @@ var Player_VideoJS = (function() {
         "sources": [{"type": "video/youtube", "src": video_id}], // Also "?playsinline=1" in src
       });
 
-      if(callback != null) callback();
+      on_video_ready(player_id, callback);
     });
   }
 
