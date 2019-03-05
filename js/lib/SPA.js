@@ -72,11 +72,11 @@ if(typeof (SPA) == 'undefined') {  // Load it only one time.
       });
     }
 
-    var setVariable = function(variable_name, variable_value){
-      spa_vars[variable_name]=variable_value;
+    var setVariable = function(variable_name, variable_value) {
+      spa_vars[variable_name] = variable_value;
     }
 
-    var getVariable = function(variable_name){
+    var getVariable = function(variable_name) {
       return spa_vars[variable_name];
     }
 

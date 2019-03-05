@@ -108,11 +108,28 @@ var BackgroundImageSlideshow = (function(image_path, images, div_slideshow, opti
       css_code +=
         ".slideshowified>figure:nth-child(" + (i + 1) + ") {\n" +
         "      animation-delay: " + (i * delay) + "s;\n" +
-        "      background-image: url('" + image_path + images[i] + "');\n" +
+        (i==0 ? "      background-image: url('" + image_path + images[i] + "');\n" : "")+
         "}\n\n";
     }
 
     injectCSS(css_code);
+
+    var ijt = function(i){
+      console.log("ciao");
+      css_code = '';
+      css_code +=
+        ".slideshowified>figure:nth-child(" + (i + 1) + ") {\n" +
+        "      animation-delay: " + (i * delay) + "s;\n" +
+        "      background-image: url('" + image_path + images[i] + "');\n" +
+        "}\n\n";
+      injectCSS(css_code);
+    }
+
+    for(var i = 1;i < images.length;i++) {
+      setTimeout(ijt.bind(null, i), (options.time_visible * i * 1000)/2 + 1);
+    }
+
+
   });
   init(image_path, images, div_slideshow, options);
 });

@@ -24,11 +24,10 @@
     JSLoader.load_once("lib/HashRouting.js", function() {
       var param_roomcode = HashRouting.get_parameter("roomcode");
       if(param_roomcode) {
+        page_to_set = "room.html";
         JSLoader.load_once('lib/SPA.js', function() {
           SPA.init('./page_fragments/', function() {
-            page_set = true;
             SPA.setVar('roomcode', param_roomcode);
-            SPA.setPage("room.html");
           });
         });
       }
@@ -88,7 +87,8 @@
 
     JSLoader.load_once('lib/SPA.js', function() {
       SPA.init('./page_fragments/', function() {
-        if(!page_set) SPA.setPage('home.html');
+        if(page_to_set === undefined) page_to_set = "home.html";
+        SPA.setPage(page_to_set);
       });
     });
   </script>

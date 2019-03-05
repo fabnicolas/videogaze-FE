@@ -26,7 +26,7 @@ function set_room_content(video_container_id, video_player_id, room_data, callba
         }
       );
     } else if(room_data.stream_type == 'external_mp4') {
-      var inject_video_player = function(video){
+      var inject_video_player = function(video) {
         Player_VideoJS.inject_external_video_player(
           video_container_id,
           video_player_id,

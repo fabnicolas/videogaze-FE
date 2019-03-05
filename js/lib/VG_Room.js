@@ -308,7 +308,7 @@ var Room = (function() {
     });
   }
 
-  var init_set_data = function(response, roomcode){
+  var init_set_data = function(response, roomcode) {
     if(roomcode === undefined) roomcode = null;
 
     _roomdata = response.message;
