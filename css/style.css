@@ -113,7 +113,8 @@ body {
   height: 40%;
   width: 60%;
   padding: 35px;
-  background-color: rgba(56, 54, 52, 0.5);
+  background-color: rgba(56, 54, 52, 0.8);
+  color: white;
   border-radius: 5px;
   border: 1px solid #666262;
 }

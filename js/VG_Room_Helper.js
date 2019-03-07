@@ -21,7 +21,7 @@ function set_room_content(video_container_id, video_player_id, room_data, callba
         video_to_play,
         '',
         function() {
-          attach_videojs_handler("my_video");
+          Room.attach_videojs_handler("my_video");
           if(callback != null) callback();
         }
       );
@@ -41,7 +41,6 @@ function set_room_content(video_container_id, video_player_id, room_data, callba
 
       if(video_to_play.startsWith("blob:http") && SPA.getVariable("blob_loaded") == null) {
         JSLoader.load_once("lib/LocalFileSelector.js", function() {
-          document.getElementById("video_selector").style.display = "block";
           LocalFileSelector.listenTo("video_selector", function(file) {
             inject_video_player(file);
           });

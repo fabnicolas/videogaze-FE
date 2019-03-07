@@ -1,0 +1,15 @@
+<div class="content text-top-space">
+    Insert .mp4 URL: <input type="text" id="video_mp4_url" value=""/>
+    <input type="button" onclick="make_room('external_mp4', 'video_mp4_url')" value="Go!"/>
+    <br/><br/>
+    <h4>OR</h4>
+    <br/><br/>
+    Insert YouTube URL here: <input type="text" id="youtube_url" value=""/>
+    <input type="button" onclick="youtubeURLbutton()" value="Go!"/>
+</div>
+
+<script type="text/javascript">
+    var youtubeURLbutton=function(){
+        return make_room(null, 'youtube', document.getElementById('youtube_url').value)
+    }
+</script>

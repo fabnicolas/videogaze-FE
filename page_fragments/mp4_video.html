@@ -1,0 +1,94 @@
+<div class="div-welcome center-absolute">
+  <div id="div_nav_ghost" class="table-row nav ghost"></div>
+  <div>
+    Insert .mp4 URL:<br />
+    <input type="text" id="manual_video_mp4_url" value="" size="40" />
+    <input type="button" onclick="mp4_manual_make_room()" value="Go!" />
+    <br />
+    OR
+    <br />
+    Insert website URL to try to detect .mp4:<br />
+    <input type="text" id="auto_video_mp4_url" size="40" />
+    <input type="button" onclick="mp4_auto_make_room()" value="Go!" />
+    <br />
+    <div id="mp4_auto_search_results" style="text-align: left;">
+
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var div_mp4_auto_search_results = document.getElementById("mp4_auto_search_results");
+
+  var mp4_make_room = function(video_url) {
+    JSLoader.load_once("lib/VG_Room.js", function() {
+      make_room(null, 'external_mp4', video_url, function on_complete(response_roomcode) {
+        SPA.setVar('roomcode', response_roomcode);
+        SPA.navigateRoute("room");
+      });
+    });
+  }
+
+  var mp4_manual_make_room = function() {
+    mp4_make_room(document.getElementById('manual_video_mp4_url').value);
+  }
+
+  var mp4_auto_render_page = function(videos) {
+    var l;
+    if(videos !== null) l = videos.length;
+    else l = 0;
+
+    var buttons = [];
+    var buttons_onclick = [];
+
+    if(l > 0) {
+      div_mp4_auto_search_results.appendChild(document.createTextNode("Video found:"));
+      div_mp4_auto_search_results.appendChild(document.createElement("br"));
+      div_mp4_auto_search_results.appendChild(document.createElement("br"));
+      for(var i = 0;i < l;i++) {
+        var div_elem = document.createElement("div");
+        button_elem_make_room = document.createElement("input");
+        button_elem_make_room.type = 'button';
+        button_elem_make_room.value = "Play video " + i;
+        buttons.push(button_elem_make_room);
+
+        (function(i) {
+          buttons_onclick[i] = function() {
+            mp4_make_room(videos[i]);
+          }
+        })(i);
+
+        div_elem.appendChild(button_elem_make_room);
+        div_elem.appendChild(document.createTextNode("- Link: " + videos[i]));
+        div_mp4_auto_search_results.appendChild(div_elem);
+        div_mp4_auto_search_results.appendChild(document.createElement("br"));
+      }
+      l = buttons.length;
+      for(var i = 0;i < l;i++) {
+        buttons[i].addEventListener('click', buttons_onclick[i]);
+      }
+      buttons = null;
+      buttons_onclick = null;
+    } else {
+      var found_nothing = document.createElement("i");
+      found_nothing.appendChild(document.createTextNode("Found nothing!"));
+      div_mp4_auto_search_results.appendChild(found_nothing);
+    }
+  }
+
+  var mp4_auto_make_room = function() {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if(xhr.readyState == 4 && xhr.status == 200) {
+        div_mp4_auto_search_results.innerText = '';
+
+        var videos = xhr.responseText.match(
+          /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*).mp4.+?(?=("|'))/g
+        );
+        mp4_auto_render_page(videos);
+      }
+    };
+    xhr.open("GET", "https://cors-anywhere.herokuapp.com/" + (document.getElementById('auto_video_mp4_url').value), true);
+    xhr.send();
+  }
+</script>

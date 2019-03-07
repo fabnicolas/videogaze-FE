@@ -1,12 +1,17 @@
 <div class="div-welcome center-absolute">
-  <span id="lang-welcome"></span><br />
+  <span style="font-family: 'halfomaniaregular'; font-size:60px;" id="lang-welcome"></span><br />
   <span id="lang-desc"></span><br />
   <input id="button_start" type="button" value="Start" />
+  <input id="button_start_mp4" type="button" value="Start (mp4)" />
 </div>
 
 <script type="text/javascript">
   document.getElementById("button_start").addEventListener('click', function() {
     SPA.navigateRoute("local_video");
+  });
+
+  document.getElementById("button_start_mp4").addEventListener('click', function(){
+    SPA.navigateRoute("mp4_video");
   });
 
   _lang.patch_page(['welcome', 'desc']);  

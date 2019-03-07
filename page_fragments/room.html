@@ -16,15 +16,18 @@
           document.getElementById("video_player_container"),
           'my_video',
           response.message,
-          function(){console.log("ok");remove_div_nav_ghost();}
+          function() {remove_div_nav_ghost();}
         );
       });
     }
 
     JSLoader.load_once("lib/VG_Room.js", function() {
       JSLoader.load_once("lib/Player_VideoJS.js", function() {
+        console.log(SPA.getVar('roomcode'));
         Room.init(GLOBAL.backend_url, SPA.getVar('roomcode'), null,
           function on_room_init(response) {
+
+            console.log(response);
             if(response.status == 1) set_room(response);
           }
         );

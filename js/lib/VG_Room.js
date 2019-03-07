@@ -588,6 +588,8 @@ var Room = (function() {
     _videoplayer.on('seeked', _event_handlers['seeked']);
     _videoplayer.on('loadedmetadata', _event_handlers['loadedmetadata']);
 
+    _event_handlers['loadedmetadata']();
+
     if(callback != null) callback();
   }
 

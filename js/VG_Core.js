@@ -61,6 +61,10 @@ JSLoader.load_once('lib/SPA.js', function() {
       'local_video': function() {
         SPA.setPage("local_video.html", "spa-content");
         SPA.setPage("vg-home-bottom.html", "spa-bottom");
+      },
+      'mp4_video': function(){
+        SPA.setPage("mp4_video.html", "spa-content");
+        SPA.setPage("vg-home-bottom.html", "spa-bottom");
       }
     })
 
