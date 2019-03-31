@@ -3,18 +3,14 @@ JSLoader.load_once("lib/Logger.js", function() {
   Logger.enable();
 });
 
-var page_to_set = '';
+var page_to_set = '',  roomcode_to_set = '';
 
 // Handle # urls like routing
 JSLoader.load_once("lib/HashRouting.js", function() {
   var param_roomcode = HashRouting.get_parameter("roomcode");
   if(param_roomcode) {
     page_to_set = "room";
-    JSLoader.load_once('lib/SPA.js', function() {
-      SPA.init('./page_fragments/', function() {
-        SPA.setVar('roomcode', param_roomcode);
-      });
-    });
+    roomcode_to_set = param_roomcode;
   }
 });
 
@@ -46,7 +42,6 @@ JSLoader.load_once('lib/slideshowify.js', function() {
   );
 });
 
-
 JSLoader.load_once('lib/SPA.js', function() {
   SPA.init('./page_fragments/', function() {
     SPA.setRoutes({
@@ -67,8 +62,12 @@ JSLoader.load_once('lib/SPA.js', function() {
         SPA.setPage("vg-home-bottom.html", "spa-bottom");
       }
     })
-
     if(page_to_set == '') page_to_set = "home";
+    if(page_to_set == 'room'){
+      SPA.setVar('roomcode', roomcode_to_set);
+    }
+    console.log("Pagina da settare: ");
+    console.log(page_to_set);
     SPA.navigateRoute(page_to_set);
   });
 });
