@@ -73,7 +73,8 @@ var BackgroundImageSlideshow = (function(image_path, images, div_slideshow, opti
     var anim_sub_perc = parseFloat((100 / images.length + initial_perc).toFixed(2));
 
     // Add class "slideshowified" and inject figure tags
-    div_slideshow.className += " slideshowified";
+    if(div_slideshow.className != "") div_slideshow.className+=" ";
+    div_slideshow.className += "slideshowified";
     for(var i = 0;i < images.length;i++) {
       div_slideshow.appendChild(document.createElement("figure"));
     }
@@ -81,7 +82,8 @@ var BackgroundImageSlideshow = (function(image_path, images, div_slideshow, opti
     // Prepare animations and inject CSS code into page
     var css_code = '';
     css_code +=
-      ".slideshowified {overflow-x: hidden; overflow-y: hidden; width: 100%;}\n\n" +
+      ".slideshowified {position: absolute; top: 0; left: 0; z-index: -1; "+
+      "overflow-x: hidden; overflow-y: hidden; height: 100%; width: 100%;}\n\n" +
       ".slideshowified>figure {\n" +
       " animation: imageAnimation " + total_time + "s linear infinite 0s;\n" +
       " backface-visibility: hidden;\n" +
