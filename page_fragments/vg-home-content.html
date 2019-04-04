@@ -1,8 +1,14 @@
-<div class="div-welcome center-absolute">
-  <span style="font-family: 'halfomaniaregular'; font-size:60px;" id="lang-welcome"></span><br />
-  <span id="lang-desc"></span><br />
-  <input id="button_start" type="button" value="Start" />
-  <input id="button_start_mp4" type="button" value="Start (mp4)" />
+<div class="two-columns left" style="width: 30%;">
+  <img src="./images/logo/vglogo.png" style="width: 100%; height: auto;" />
+</div>
+
+<div class="two-columns right" style="width: 70%">
+  <div class="div-welcome center-absolute">
+    <span style="font-family: 'halfomaniaregular'; font-size:60px;" id="lang-welcome"></span><br />
+    <span id="lang-desc"></span><br />
+    <input id="button_start" type="button" value="Start" />
+    <input id="button_start_mp4" type="button" value="Start (mp4)" />
+  </div>
 </div>
 
 <script type="text/javascript">
@@ -10,7 +16,7 @@
     SPA.navigateRoute("local_video");
   });
 
-  document.getElementById("button_start_mp4").addEventListener('click', function(){
+  document.getElementById("button_start_mp4").addEventListener('click', function() {
     SPA.navigateRoute("mp4_video");
   });
 
