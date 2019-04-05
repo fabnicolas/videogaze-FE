@@ -4,6 +4,7 @@ JSLoader.load_once("lib/Logger.js", function() {
 });
 
 var page_to_set = '',  roomcode_to_set = '';
+var menu_nav = null;
 
 // Handle # urls like routing
 JSLoader.load_once("lib/HashRouting.js", function() {
@@ -70,4 +71,8 @@ JSLoader.load_once('lib/SPA.js', function() {
     console.log(page_to_set);
     SPA.navigateRoute(page_to_set);
   });
+});
+
+JSLoader.load("lib/CollapseElement.js", function(){
+  menu_nav = CollapseElement('menu-nav');
 });

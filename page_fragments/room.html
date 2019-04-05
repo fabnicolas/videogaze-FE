@@ -1,6 +1,5 @@
-<div id="div_nav_ghost" class="table-row nav ghost"></div>
 <div class="content" id="video_player_container">
-  <input id="video_selector" type="file" accept="video/*"/>
+  <input id="video_selector" type="file" accept="video/*" />
 </div>
 
 <script type="text/javascript">
@@ -21,16 +20,20 @@
       });
     }
 
+    var init_room = function() {
+      Room.init(GLOBAL.backend_url, SPA.getVar('roomcode'), null,
+        function on_room_init(response) {
+          if(response.status == 1) {
+            menu_nav.toggle_animation();
+            set_room(response);
+          }
+        }
+      );
+    }
+
     JSLoader.load_once("lib/VG_Room.js", function() {
       JSLoader.load_once("lib/Player_VideoJS.js", function() {
-        console.log(SPA.getVar('roomcode'));
-        Room.init(GLOBAL.backend_url, SPA.getVar('roomcode'), null,
-          function on_room_init(response) {
-
-            console.log(response);
-            if(response.status == 1) set_room(response);
-          }
-        );
+        init_room();
       });
     });
   })();

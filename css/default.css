@@ -12,7 +12,8 @@
 }
 
 .nav.component {
-  position: fixed;
+  position: sticky;
+  padding-top: 1px;
   top: 0;
 }
 
