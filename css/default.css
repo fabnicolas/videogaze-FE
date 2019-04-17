@@ -12,7 +12,7 @@
 }
 
 .nav.component {
-  position: sticky;
+  position: absolute;
   padding-top: 1px;
   top: 0;
 }

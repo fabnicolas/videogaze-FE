@@ -67,8 +67,6 @@ JSLoader.load_once('lib/SPA.js', function() {
     if(page_to_set == 'room'){
       SPA.setVar('roomcode', roomcode_to_set);
     }
-    console.log("Pagina da settare: ");
-    console.log(page_to_set);
     SPA.navigateRoute(page_to_set);
   });
 });

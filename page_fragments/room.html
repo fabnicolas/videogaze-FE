@@ -1,21 +1,27 @@
-<div class="content" id="video_player_container">
+<div class="two-columns left content" id="video_player_container">
   <input id="video_selector" type="file" accept="video/*" />
+</div>
+
+<div class="two-columns left chat" id="chat_container">
+  Some data
 </div>
 
 <script type="text/javascript">
   (function() {
-    var remove_div_nav_ghost = function() {
-      var element_to_remove = document.getElementById("div_nav_ghost");
-      element_to_remove.parentNode.removeChild(element_to_remove);
+    var remove_element = function(element_to_remove) {
+      if(element_to_remove) element_to_remove.parentNode.removeChild(element_to_remove);
     }
 
-    var set_room = function(response) {
+    var set_room = function(response, callback) {
       JSLoader.load_once("VG_Room_Helper.js", function() {
         set_room_content(
           document.getElementById("video_player_container"),
           'my_video',
           response.message,
-          function() {remove_div_nav_ghost();}
+          function() {
+            remove_element(document.getElementById("div_nav_ghost"));
+            callback();
+          }
         );
       });
     }
@@ -25,7 +31,10 @@
         function on_room_init(response) {
           if(response.status == 1) {
             menu_nav.toggle_animation();
-            set_room(response);
+            set_room(response, function on_set_room_done(){
+              remove_element(document.getElementById("div_presentation"));
+              SPA.setPage("chat.html", "chat_container");
+            });
           }
         }
       );
@@ -37,4 +46,29 @@
       });
     });
   })();
+
+  var video_player_container = document.getElementById('video_player_container');
+  var chat_container = document.getElementById('chat_container');
+  var show_chat = function(set_visible){
+    if(set_visible){
+      video_player_container.style.width = video_width-chat_width;
+      chat_container.style.marginRight = 0;
+    }else{
+      video_player_container.style.width = video_width;
+      chat_container.style.marginRight = -chat_width;
+    }
+  }
+
+  var video_width = video_player_container.offsetWidth;
+  var chat_status = false;
+  var chat_width = 300;
+
+  document.onkeydown = function(event) {
+    event = event || window.event;
+    var keyCode = event.which || event.keyCode;
+    if(keyCode === 48){
+      chat_status = !chat_status;
+      show_chat(chat_status);
+    }
+  };
 </script>
