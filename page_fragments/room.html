@@ -15,10 +15,7 @@
     var set_room = function(response, callback) {
       JSLoader.load_once("VG_Room_Helper.js", function() {
         set_room_content(
-          document.getElementById("video_player_container"),
-          'my_video',
-          response.message,
-          function() {
+          document.getElementById("video_player_container"), 'my_video', response.message, function() {
             remove_element(document.getElementById("div_nav_ghost"));
             callback();
           }
@@ -27,20 +24,22 @@
     }
 
     var init_room = function() {
-      Room.init(GLOBAL.backend_url, SPA.getVar('roomcode'), null,
-        function on_room_init(response) {
-          if(response.status == 1) {
-            menu_nav.toggle_animation();
-            set_room(response, function on_set_room_done(){
-              remove_element(document.getElementById("div_presentation"));
-              SPA.setPage("chat.html", "chat_container");
-            });
-          }
+      Room.init(GLOBAL.backend_url, SPA.getVar('roomcode'), null, function on_room_init(response) {
+        if(response.status == 1) {
+          menu_nav.toggle_animation();
+          set_room(response, function on_set_room_done(){
+            remove_element(document.getElementById("div_presentation"));
+            SPA.setPage("chat.html", "chat_container");
+          });
         }
-      );
+      });
     }
 
     JSLoader.load_once("lib/VG_Room.js", function() {
+      Room.set_on_server_answer(function(message){
+        console.log("Captured");
+        console.log(message);
+      });
       JSLoader.load_once("lib/Player_VideoJS.js", function() {
         init_room();
       });

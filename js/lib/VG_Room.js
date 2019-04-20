@@ -49,14 +49,14 @@ var RoomHTTPEvents = (function() {
    * @param {string} url - URL to target.
    * @param {FormData} form_data - Parameters as FormData object for request.
    * @param {int} xhr_timeout - Timeout for XHR request.
-   * @param {object} repeat_data - Define when to repeat request. Example: {repeat_type: 'always', repeat_time: 250}. Supported values: ['onerror', 'always']
-   * @param {function} callback - Callback invoked on success (data).
+   * @param {function} callback_success - Callback invoked on success (data).
+   * @param {function} callback_failure - Callback invoked on failure (status).
    */
-  var xhr_fetch_data = function(method, url, form_data, xhr_timeout, repeat_data, callback) {
+  var xhr_fetch = function(method, url, form_data, xhr_timeout, callback_success, callback_failure) {
     if(form_data === undefined) form_data = null;
     if(xhr_timeout === undefined) xhr_timeout = 3000;
-    if(repeat_data === undefined) repeat_data = null;
-    if(callback === undefined) callback = null;
+    if(callback_success === undefined) callback_success = null;
+    if(callback_failure === undefined) callback_failure = null;
 
     var xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
@@ -67,36 +67,22 @@ var RoomHTTPEvents = (function() {
         if(xhr.status == 200) {
           try {
             Logger.log('xhr_response', method, url, JSON.parse(xhr.response).message);
-            if(callback != null) callback(JSON.parse(xhr.response));
-            if(repeat_checktype(repeat_data, 'always')) {
-              setTimeout(xhr_fetch_data(method, url, form_data, xhr_timeout, callback), repeat_data.repeat_time);
-            }
+            if(callback_success != null) callback_success(JSON.parse(xhr.response));
           } catch(err) {
             alert("Error, data: " + xhr.response + "\n\n" + err.stack);
           }
-        } else {
-          if(repeat_checktype(repeat_data, 'onerror') || repeat_checktype(repeat_data, 'always')) {
-            var rtime = null;
-            if(xhr.status == 508) rtime = 5000;
-            else rtime = repeat_data.repeat_time;
-            setTimeout(xhr_fetch_data(method, url, form_data, xhr_timeout, callback), rtime);
-          }
-        }
+        } else if(callback_failure != null) callback_failure(xhr.status);
       }
     };
 
     xhr.ontimeout = function() {
       Logger.log("XHR: onTimeout[" + method + ",URL=" + url + ",form_data=" + form_data + "]");
-      if(repeat_checktype(repeat_data, 'onerror') || repeat_checktype(repeat_data, 'always')) {
-        setTimeout(xhr_fetch_data(method, url, form_data, xhr_timeout, callback), repeat_data.repeat_time);
-      }
+      if(callback_failure != null) callback_failure(xhr.status);
     }
 
     xhr.onerror = function() {
       Logger.log("XHR: onError[" + method + ",URL=" + url + ",form_data=" + form_data + "]");
-      if(repeat_checktype(repeat_data, 'onerror') || repeat_checktype(repeat_data, 'always')) {
-        setTimeout(xhr_fetch_data(method, url, form_data, xhr_timeout, callback), repeat_data.repeat_time);
-      }
+      if(callback_failure != null) callback_failure(xhr.status);
     };
 
     if(form_data != null) xhr.send(form_data);
@@ -112,46 +98,39 @@ var RoomHTTPEvents = (function() {
    * @param {string} url - URL to target.
    * @param {FormData} form_data - Parameters as FormData object for request.
    * @param {int} xhr_timeout - Timeout for XHR request.
-   * @param {object} repeat_data - Define when to repeat request. Example: {repeat_type: 'always', repeat_time: 250}. Supported values: ['onerror', 'always']
-   * @param {function} callback - Callback invoked on success (data).
+   * @param {function} callback_success - Callback invoked on success (data).
+   * @param {function} callback_failure - Callback invoked on failure (status).
    */
-  var sse_fetch_data = function(method, url, form_data, xhr_timeout, repeat_data, callback) {
+  var sse_fetch = function(method, url, form_data, xhr_timeout, callback_success, callback_failure) {
     if(form_data === undefined) form_data = null;
     if(xhr_timeout === undefined) xhr_timeout = 3000;
-    if(repeat_data === undefined) repeat_data = null;
-    if(callback === undefined) callback = null;
+    if(callback_success === undefined) callback_success = null;
+    if(callback_failure === undefined) callback_failure = null;
 
     if(typeof (EventSource) !== 'undefined') {
       var _loaded_url = url +
-        "?mode=" + form_data.get('mode') + "&roomcode=" + form_data.get('roomcode');
+        "?mode=" + form_data.get('mode') +
+        "&roomcode=" + form_data.get('roomcode') +
+        "&last_chat_id=" + form_data.get('last_chat_id');
 
       var source = new EventSource(_loaded_url);
       source.onerror = function(event) {
-        Logger.log('SSE error:' + _loaded_url + " | " + JSON.stringify(event));
+        Logger.log('SSE error: ' + _loaded_url + " | " + JSON.stringify(event));
         source.close();
-        if(repeat_checktype(repeat_data, 'onerror') || repeat_checktype(repeat_data, 'always')) {
-          setTimeout(
-            sse_fetch_data(method, url, form_data, xhr_timeout, repeat_data, callback),
-            repeat_data.repeat_time);
-        }
+        //var x = arguments;  setTimeout(function(){sse_fetch(x);},2000);
+        if(callback_failure != null) callback_failure(500);
       };
       source.onmessage = function(event) {
         var server_message = JSON.parse(event.data);
-        if(!(server_message.status == 0 && server_message.message == "SSE_CLOSE_CONNECTION")) {
+        if(!(server_message.status == 0 && server_message.message == "SSE_CLOSE_CONNECTION")){
           Logger.log("SSE is actually working. 30 seconds timer.");
-          callback(server_message);
-        } else {
+        }else{
+          Logger.log("Source closed.");
           source.close();
-          if(repeat_checktype(repeat_data, 'always')) {
-            setTimeout(
-              sse_fetch_data(method, url, form_data, xhr_timeout, repeat_data, callback),
-              repeat_data.repeat_time);
-          }
         }
+        callback_success(server_message);
       }
-    } else {
-      xhr_fetch_data(method, url, form_data, xhr_timeout, repeat_data, callback);
-    }
+    }else xhr_fetch(method, url, form_data, xhr_timeout, repeat_data, callback);
   }
 
   /**
@@ -162,10 +141,11 @@ var RoomHTTPEvents = (function() {
    * @param {array} extra_data - Additional parameters, like {var1: value1}.
    * @param {function} callback - Callback invoked on success (data).
    */
-  var init = function(backend_url, roomcode, extra_data, callback) {
+  var init = function(backend_url, roomcode, extra_data, callback_success, callback_failure) {
     if(roomcode === undefined) roomcode = null;
     if(extra_data === undefined) extra_data = null;
-    if(callback === undefined) callback = null;
+    if(callback_success === undefined) callback_success = null;
+    if(callback_failure === undefined) callback_failure = null;
 
     _backend_url = backend_url;
 
@@ -177,11 +157,7 @@ var RoomHTTPEvents = (function() {
       fd.append(extra_data_param_name, extra_data[extra_data_param_name]);
     }
 
-    xhr_fetch_data(
-      'POST',
-      _backend_url + 'room.php',
-      fd, undefined, {repeat_type: 'onerror', repeat_time: 250}, callback
-    );
+    xhr_fetch('POST', _backend_url + 'room.php', fd, undefined, callback_success, callback_failure);
   }
 
   /**
@@ -194,9 +170,10 @@ var RoomHTTPEvents = (function() {
    * @param {array} extra_data - Additional parameters, like {var1: value1}.
    * @param {function} callback - Callback invoked on success (data).
    */
-  var request = function(roomcode, request_type, request_value, extra_data, callback) {
+  var request = function(roomcode, request_type, request_value, extra_data, callback_success, callback_failure) {
     if(extra_data === undefined) extra_data = null;
-    if(callback === undefined) callback = null;
+    if(callback_success === undefined) callback_success = null;
+    if(callback_failure === undefined) callback_failure = null;
 
     var fd = new FormData();
     fd.append("mode", "request");
@@ -207,11 +184,7 @@ var RoomHTTPEvents = (function() {
       fd.append(extra_data_param_name, extra_data[extra_data_param_name]);
     }
 
-    xhr_fetch_data(
-      'POST',
-      _backend_url + 'room.php',
-      fd, undefined, {repeat_type: 'onerror', repeat_time: 250}, callback
-    );
+    xhr_fetch('POST', _backend_url + 'room.php', fd, undefined, callback_success, callback_failure);
   }
 
   /**
@@ -221,25 +194,19 @@ var RoomHTTPEvents = (function() {
    * @param {string} roomcode - Roomcode of the room.
    * @param {function} callback - Callback invoked on success (data).
    */
-  var sync = function(roomcode, callback) {
-    if(callback === undefined) callback = null;
+  var sync = function(roomcode, last_chat_id, callback_success, callback_failure) {
+    if(callback_success === undefined) callback_success = null;
+    if(callback_failure === undefined) callback_failure = null;
 
     var fd = new FormData();
     fd.append("mode", "sync");
     fd.append("roomcode", roomcode);
+    fd.append("last_chat_id", last_chat_id);
 
     if(_mode == 0) {
-      xhr_fetch_data(
-        'POST',
-        _backend_url + 'room.php',
-        fd, undefined, {repeat_type: 'always', repeat_time: 250}, callback
-      );
+      xhr_fetch('POST', _backend_url + 'room.php', fd, undefined, callback_success, callback_failure);
     } else if(_mode == 2) {
-      sse_fetch_data(
-        'POST',
-        _backend_url + 'room.php',
-        fd, undefined, {repeat_type: 'always', repeat_time: 250}, callback
-      );
+      sse_fetch('POST', _backend_url + 'room.php', fd, undefined, callback_success, callback_failure);
     }
   }
 
@@ -282,6 +249,7 @@ var Room = (function() {
   var _local_last_ctime = 0;
   var _event_handlers = [];
   var _player_ready = false;
+  var _last_chat_id = -1;
 
   // Returns room data.
   var get_data = function() {return _roomdata;}
@@ -408,7 +376,14 @@ var Room = (function() {
    * @param {function} callback - Callback invoked on success (data). 
    */
   var sync = function(callback) {
-    RoomHTTPEvents.sync(_roomdata.roomcode, callback);
+    console.log("Sending sync request with last chat id: "+_last_chat_id);
+    RoomHTTPEvents.sync(_roomdata.roomcode, _last_chat_id,
+      function(server_answer){
+        callback(server_answer);
+        if(server_answer.message == "SSE_CLOSE_CONNECTION")
+          setTimeout(function(){sync(callback);},250);
+      }
+    );
   }
 
   var setVideotime = function(video_time) {
@@ -465,6 +440,28 @@ var Room = (function() {
         event_notrigger(['pause'], function() {_videoplayer.pause();});
       }
     }
+
+    if(server_sync.hasOwnProperty("last_chat_id")){
+      console.log("Updated to: "+server_sync.last_chat_id)
+      _last_chat_id = server_sync.last_chat_id;
+    }
+  }
+
+  var on_server_answer = function(server_sync){}
+
+  var set_on_server_answer = function(param_on_server_answer){
+    on_server_answer = param_on_server_answer;
+  }
+
+  var on_server_sync = function(server_sync, first_time){
+    if(!_is_attempting_requests && server_sync.status == 1) {
+      _sync_ignore_events = true;
+
+      if(_player_ready == true) process_sync(server_sync.message, first_time);
+      on_server_answer(server_sync);
+
+      setTimeout(function() {_sync_ignore_events = false;}, 250);
+    }
   }
 
   /**
@@ -477,18 +474,12 @@ var Room = (function() {
     if(first_time) _sync_enabled = true;
     if(_sync_enabled) {
       if(!_is_attempting_requests) {
-        sync(function(server_sync) {
-          if(!_is_attempting_requests && server_sync.status == 1) {
-            _sync_ignore_events = true;
-
-            server_sync = server_sync.message;
-            if(_player_ready == true) process_sync(server_sync, first_time);
-
-            first_time = false;
-            setTimeout(function() {_sync_ignore_events = false;}, 250);
-          }
+        sync(function(server_sync){
+          on_server_sync(server_sync, first_time);
         });
-      } else {SmartTimeout.setSmartTimeout('room_sync', function() {start_sync(false);}, 250);}
+      } else {
+        SmartTimeout.setSmartTimeout('room_sync', function() {start_sync(false);}, 250);
+      }
     }
   }
 
@@ -675,7 +666,8 @@ var Room = (function() {
     attach_html5_video_handler: attach_html5_video_handler,
     attach_videojs_handler: attach_videojs_handler,
     get_video_player: get_video_player,
-    request_sync: request_sync
+    request_sync: request_sync,
+    set_on_server_answer: set_on_server_answer
   }
 })();
 
